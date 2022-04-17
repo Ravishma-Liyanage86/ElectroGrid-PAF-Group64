@@ -22,7 +22,7 @@ public class Bill {
 	}
 	
 	//Read Bills
-	public String readBills() {
+	public String readBills(String user) {
 		String output = "";
 		
 		try {
@@ -45,9 +45,14 @@ public class Bill {
 					+ "<th>User ID</th>"
 					+ "<th>Update</th><th>Remove</th></tr>";
 			
-			String query = "select * from bills";
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
+			//create prepared statement
+			String query = "select * from bills where userID=?";
+			
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			//bind values
+			preparedStmt.setInt(1, Integer.parseInt(user));
+			//execute query
+			ResultSet rs = preparedStmt.executeQuery();
 			
 			//loop through resultset rows
 			while(rs.next()) {
@@ -90,6 +95,91 @@ public class Bill {
 		}
 		
 		return output;
+	}	
+	
+	
+	
+	//Create Bills
+	public String createBill(Date BillingDate, int unitCost, int unitsUsed, int serviceCharge, boolean billSettled, int userID) {
+		
+		String output = "";
+		
+		try {
+			Connection con = connect();
+			
+			if(con == null) {
+				return "Error while connecting to the database for inserting.";
+			}
+			
+			//calculate total cost
+			int totalCost = (unitCost * unitsUsed) + serviceCharge;
+			
+			//create a prepared statement
+			String query = "insert into bills (`billDate`, `unitCost`, `unitsUsed`, `serviceCharge`, `totalCost`, `settled`, `userID`)"
+					+" values(?,?,?,?,?,?,?)";
+			
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			// binding values
+			preparedStmt.setDate(1, BillingDate);
+			preparedStmt.setInt(2, unitCost);
+			preparedStmt.setInt(3, unitsUsed);
+			preparedStmt.setInt(4, serviceCharge);
+			preparedStmt.setInt(5, totalCost);
+			preparedStmt.setBoolean(6, billSettled);
+			preparedStmt.setInt(7, userID);
+			
+			// execute the statement
+			preparedStmt.execute();
+			
+			con.close();
+			
+			output = "Inserted successfully";
+		}
+		catch(Exception e) {
+			output = "Error while inserting the item.";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
 	}
+	
+	
+	//Update Bills
 
+	
+	
+	//Delete Bills
+	public String deleteBill(String billID) {
+		String output = "";
+		
+		try {
+			Connection con = connect();
+			
+			if(con == null) {
+				return "Error while connecting to the database for deleting."; 
+			}
+			
+			//create prepared statement
+			String query = "delete from bills where billID=?";
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			// binding values to prepared statement
+			preparedStmt.setInt(1, Integer.parseInt(billID));
+			
+			// execute the statement
+			preparedStmt.execute();
+			
+			con.close();
+			
+			output = "Deleted successfully";
+		}
+		catch(Exception e) {
+			output = "Error while deleting the item.";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
+	}
+	
 }
