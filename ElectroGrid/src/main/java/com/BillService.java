@@ -12,6 +12,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 
 @Path("/Bills")
 public class BillService {
@@ -52,7 +55,25 @@ public class BillService {
 		return output;
 		
 	}
-
+	
+	
+	//Update bills for settled
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateSettledBill(String billData) {
+		
+		//Convert the input string to a JSON object
+		JsonObject billObject = new JsonParser().parse(billData).getAsJsonObject();
+		
+		//read JSON values
+		int billID = billObject.get("billID").getAsInt();
+		boolean billSettled = billObject.get("billSettled").getAsBoolean();
+		
+		String output = billObj.updateSettledBills(billID, billSettled);
+		return output;
+	}
 	
 	//delete bill
 	@DELETE

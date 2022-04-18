@@ -145,7 +145,42 @@ public class Bill {
 	}
 	
 	
-	//Update Bills
+	//Update Bills 
+	//for settles bills
+	public String updateSettledBills(int billID, boolean billSettled) {
+		String output = "";
+		
+		Connection con = connect();
+		
+		try {
+			
+			if(con == null) {
+				return "Error while connecting to the database for updating.";
+			}
+			
+			//create prepared statement
+			String query = "update bills set settled=? where billID=?";
+			PreparedStatement preparedStmt = con.prepareStatement(query);
+			
+			//binding values
+			preparedStmt.setBoolean(1, billSettled);
+			preparedStmt.setInt(2, billID);
+			
+			//execute statement
+			preparedStmt.execute();
+			
+			con.close();
+			
+			output = "Updated successfully";		
+			
+		}
+		catch(Exception e) {
+			output = "Error while updating bill";
+			System.err.println(e.getMessage());
+		}
+		
+		return output;
+	}
 
 	
 	
@@ -175,7 +210,7 @@ public class Bill {
 			output = "Deleted successfully";
 		}
 		catch(Exception e) {
-			output = "Error while deleting the item.";
+			output = "Error while deleting the bill.";
 			System.err.println(e.getMessage());
 		}
 		
