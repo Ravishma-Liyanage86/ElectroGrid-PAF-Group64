@@ -147,8 +147,98 @@ public class EmergencyServicesManagement {
 
 	}
 
-	
-	
+	// creating a method to update Emergency Service Request
+	public String updateEmergencyServiceRequest(Integer serviceId, String electricityMeter, String otherIssue,
+			String requestedDate, String requiredTime, Integer phoneNo, String description, String address) {
 
-	
+		String updateOutput = "";
+
+		try {
+
+			// creating theDB connection
+			Connection myConnect = myConnection();
+
+			// check whether successfully connected with the db or not
+			if (myConnect == null) {
+				return "Error occured while connecting to the database for update the request";
+			}
+
+			// crating a prepared statement for executing the query
+			String myQuery = "UPDATE emergency_service SET Electricity_Meter_Failure=?, Other_Issue=?, Requested_Date=?, Required_Time_Period=?, Phone_Number=?, Problem_Description=?, Address=? WHERE EService_ID=?";
+
+			PreparedStatement myPreparedStmt = myConnect.prepareCall(myQuery);
+
+			// binding values
+			myPreparedStmt.setString(1, electricityMeter);
+			myPreparedStmt.setString(2, otherIssue);
+			myPreparedStmt.setString(3, requestedDate);
+			myPreparedStmt.setString(4, requiredTime);
+			myPreparedStmt.setInt(5, phoneNo);
+			myPreparedStmt.setString(6, description);
+			myPreparedStmt.setString(7, address);
+			myPreparedStmt.setInt(8, serviceId);
+
+			// execute the statement
+			myPreparedStmt.execute();
+
+			// closing the database connection
+			myConnect.close();
+
+			// states whether emergency service request has updated successfully
+			updateOutput = "Your Emergency Sevice request have updated succesfully";
+
+		} catch (Exception e) {
+			// displaying if an error occur while updating the previously made request
+			updateOutput = "Oops! Error occured while updating the Emergency ervice Request";
+			System.err.println(e.getMessage());
+
+		}
+
+		// returning the output
+		return updateOutput;
+
+	}
+
+	// creating a method to delete an Emergency Service Request
+	public String deleteEmergencyServiceRequest(Integer eServiceId) {
+
+		String deleteOutput = "";
+
+		try {
+
+			// creating theDB connection
+			Connection myConnect = myConnection();
+
+			// check whether successfully connected with the db or not
+			if (myConnect == null) {
+				return "Error occured while connecting to the database for add the request";
+			} else {
+				// create a prepared statement to run the SQL query
+				String myQuery = "DELETE from emergency_service where EService_ID=?";
+
+				PreparedStatement myPreparedStmt = myConnect.prepareStatement(myQuery);
+
+				// binding values
+				myPreparedStmt.setInt(1, eServiceId);
+
+				// execute the statement
+				myPreparedStmt.execute();
+
+				// closing the database connection
+				myConnect.close();
+
+				// states whether emergency service request has updated successfully
+				deleteOutput = "Your  Emergency Service Request deleted successfully!";
+			}
+
+		} catch (Exception e) {
+			// displaying if an error occur while deleting the previously made request
+			deleteOutput = "Error occured while deleting your Emergency Service Request ";
+			System.err.println(e.getMessage());
+		}
+
+		// returning the output
+		return deleteOutput;
+	}
 }
+

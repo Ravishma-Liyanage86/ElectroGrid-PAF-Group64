@@ -49,10 +49,54 @@ public class EmergencyService {
 
 	}
 
-	
+	// API for update Emergency Service Request
+	@PUT
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String updateEmergencyServiceRequest(String EServiceData) {
 
-	
+		// Convert the input string to a JSON object
+		JsonObject eServiceObj = new JsonParser().parse(EServiceData).getAsJsonObject();
 
+		// reading the values from JSON object
+		Integer serviceId = eServiceObj.get("EService_ID").getAsInt();
+		String electricityMeter = eServiceObj.get("Electricity_Meter_Failure").getAsString();
+		String otherIssue = eServiceObj.get("Other_Issue").getAsString();
+		String requestedDate = eServiceObj.get("Requested_Date").getAsString();
+		String requiredTime = eServiceObj.get("Required_Time_Period").getAsString();
+		Integer phoneNo = eServiceObj.get("Phone_Number").getAsInt();
+		String description = eServiceObj.get("Problem_Description").getAsString();
+		String address = eServiceObj.get("Address").getAsString();
 
+		// calling the update method and pass relevant values
+
+		String updateOutput = emergencyService.updateEmergencyServiceRequest(serviceId, electricityMeter, otherIssue,
+				requestedDate, requiredTime, phoneNo, description, address);
+
+		// returning the output
+		return updateOutput;
+
+	}
+
+	// API for delete emergency service
+	@DELETE
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deleteEmergencyServiceRequest(String eServiceData) {
+
+		// Convert the input string to a JSON object
+		JsonObject eServiceObj = new JsonParser().parse(eServiceData).getAsJsonObject();
+
+		// reading the values from JSON object
+		Integer serviceId = eServiceObj.get("EService_ID").getAsInt();
+
+		// calling the delete method and pass the service ID
+		String deleteOutput = emergencyService.deleteEmergencyServiceRequest(serviceId);
+
+		// returning the output
+		return deleteOutput;
+	}
 
 }
