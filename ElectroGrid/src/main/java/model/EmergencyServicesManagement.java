@@ -185,7 +185,7 @@ public class EmergencyServicesManagement {
 			myConnect.close();
 
 			// states whether emergency service request has updated successfully
-			updateOutput = "Your Emergency Sevice request have updated succesfully";
+			updateOutput = "Your Emergency Service request has updated successfully";
 
 		} catch (Exception e) {
 			// displaying if an error occur while updating the previously made request

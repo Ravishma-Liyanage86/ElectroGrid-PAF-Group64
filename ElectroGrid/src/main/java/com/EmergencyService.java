@@ -78,25 +78,46 @@ public class EmergencyService {
 		return updateOutput;
 
 	}
-
+	
 	// API for delete emergency service
-	@DELETE
-	@Path("/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteEmergencyServiceRequest(String eServiceData) {
+		@DELETE
+		@Path("/")
+		@Consumes(MediaType.APPLICATION_XML)
+		@Produces(MediaType.TEXT_PLAIN)
+		public String deleteEmergencyServiceRequest(String eServiceData) {
 
-		// Convert the input string to a JSON object
-		JsonObject eServiceObj = new JsonParser().parse(eServiceData).getAsJsonObject();
+			// Convert the input string to an XML document
+			Document eServiceDoc= Jsoup.parse(eServiceData, "",Parser.xmlParser());
 
-		// reading the values from JSON object
-		Integer serviceId = eServiceObj.get("EService_ID").getAsInt();
+			// reading the service ID from the XML document
+			String serviceID = eServiceDoc.select("EService_ID").text();
 
-		// calling the delete method and pass the service ID
-		String deleteOutput = emergencyService.deleteEmergencyServiceRequest(serviceId);
+			// calling the delete method and pass the service ID
+			String deleteOutput = emergencyService.deleteEmergencyServiceRequest(Integer.parseInt(serviceID));
 
-		// returning the output
-		return deleteOutput;
-	}
+			// returning the output
+			return deleteOutput;
+		}
+
+
+//	// API for delete emergency service
+//	@DELETE
+//	@Path("/")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.TEXT_PLAIN)
+//	public String deleteEmergencyServiceRequest(String eServiceData) {
+//
+//		// Convert the input string to a JSON object
+//		JsonObject eServiceObj = new JsonParser().parse(eServiceData).getAsJsonObject();
+//
+//		// reading the values from JSON object
+//		Integer serviceId = eServiceObj.get("EService_ID").getAsInt();
+//
+//		// calling the delete method and pass the service ID
+//		String deleteOutput = emergencyService.deleteEmergencyServiceRequest(serviceId);
+//
+//		// returning the output
+//		return deleteOutput;
+//	}
 
 }
